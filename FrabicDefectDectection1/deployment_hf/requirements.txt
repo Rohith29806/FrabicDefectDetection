@@ -1,0 +1,8 @@
+tensorflow-cpu==2.16.1
+numpy<2
+opencv-python-headless
+pillow
+fastapi
+uvicorn[standard]
+python-multipart
+ultralytics==8.4.202

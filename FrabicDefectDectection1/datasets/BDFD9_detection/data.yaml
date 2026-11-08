@@ -1,0 +1,14 @@
+train: train/images
+val: valid/images
+test: test/images
+nc: 9
+names:
+  0: 'DropStitch'
+  1: 'Hole'
+  2: 'Horizontal Mark'
+  3: 'Knot'
+  4: 'Oil Spot'
+  5: 'Setup'
+  6: 'Slub'
+  7: 'Vertical LineMark'
+  8: 'Yarn Dust'

@@ -1,0 +1,290 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>FabricAI | Defect Detection System</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <script defer src="chart.umd.min.js"></script>
+    <script defer src="jspdf.umd.min.js"></script>
+    <script defer src="script.js"></script>
+</head>
+
+<body>
+
+    <div class="app-container">
+
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-icon">F</div>
+                <div>
+                    <h2>FabricAI</h2>
+                    <span>Inspection System</span>
+                </div>
+            </div>
+
+            <nav>
+                <a href="#dashboard" class="nav-link active">▦ Dashboard</a>
+                <a href="#inspection" class="nav-link">⌕ Inspection</a>
+                <a href="#history" class="nav-link">◷ History</a>
+            </nav>
+
+            <div class="sidebar-bottom">
+                <span class="status-dot"></span>
+                Backend connection
+                <strong id="connectionStatus">Checking...</strong>
+            </div>
+        </aside>
+
+        <main class="main-content">
+
+            <div class="static-notice" role="status">
+                <strong>Free static preview</strong>
+                <span>This public page can preview images, but hosted AI analysis is unavailable on free static hosting. Use the local project backend for YOLOv8 and MobileNetV2 predictions.</span>
+            </div>
+
+            <header class="topbar">
+                <div>
+                    <h1>Fabric Defect Detection</h1>
+                    <p>AI-powered textile quality inspection</p>
+                </div>
+                <div class="system-label">YOLOv8 + MobileNetV2</div>
+            </header>
+
+            <!-- DASHBOARD -->
+
+            <section id="dashboard">
+
+                <div class="welcome">
+                    <div>
+                        <h2>Inspection Dashboard</h2>
+                        <p>Upload fabric images to identify and analyse defects.</p>
+                    </div>
+                    <span class="live-indicator">● STATIC PREVIEW</span>
+                </div>
+
+                <div class="stats-grid">
+
+                    <div class="stat-card">
+                        <span>Total Inspections</span>
+                        <h2 id="totalInspections">0</h2>
+                        <small>Images processed this session</small>
+                    </div>
+
+                    <div class="stat-card">
+                        <span>Defects Detected</span>
+                        <h2 id="totalDefects">0</h2>
+                        <small>YOLO detection results</small>
+                    </div>
+
+                    <div class="stat-card">
+                        <span>Latest Confidence</span>
+                        <h2 id="latestConfidence">--</h2>
+                        <small>Most recent inspection</small>
+                    </div>
+
+                    <div class="stat-card">
+                        <span>Defect Classes</span>
+                        <h2>9</h2>
+                        <small>BDFD9 detection categories</small>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- NEW INSPECTION -->
+
+            <section id="inspection" class="inspection-section">
+
+                <div class="section-heading">
+                    <h2>New Fabric Inspection</h2>
+                    <p>Select an inspection method and upload a fabric image.</p>
+                </div>
+
+                <div class="inspection-card">
+
+                    <div class="form-group">
+                        <label for="inspectionMode">Inspection Method</label>
+
+                        <select id="inspectionMode">
+                            <option value="detect">
+                                YOLOv8 - Defect Detection
+                            </option>
+                            <option value="predict">
+                                MobileNetV2 - Classification
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" id="datasetGroup" hidden>
+                        <label for="datasetName">Dataset</label>
+
+                        <select id="datasetName">
+                            <option value="FDD">FDD</option>
+                            <option value="TILDA">TILDA</option>
+                            <option value="ZD001">ZD001</option>
+                        </select>
+                    </div>
+
+                    <div class="upload-area" id="uploadArea">
+                        <div class="upload-icon">↑</div>
+
+                        <h3>Upload Fabric Image</h3>
+
+                        <p>
+                            Drag and drop an image here or browse your computer
+                        </p>
+
+                        <input
+                            type="file"
+                            id="imageInput"
+                            accept=".jpg,.jpeg,.png"
+                            hidden
+                        >
+
+                        <button type="button" id="browseButton">
+                            Choose Image
+                        </button>
+
+                        <span class="file-info">
+                            Supported formats: JPG, JPEG, PNG
+                        </span>
+                    </div>
+
+                    <div class="preview-container" id="previewContainer" hidden>
+
+                        <h3>Selected Image</h3>
+
+                        <img id="imagePreview" alt="Fabric preview">
+
+                        <p id="fileName"></p>
+
+                        <button
+                            type="button"
+                            id="removeImage"
+                            class="secondary-button"
+                        >
+                            Remove Image
+                        </button>
+
+                    </div>
+
+                    <button
+                        type="button"
+                        id="analyzeButton"
+                        class="analyze-button"
+                        disabled
+                    >
+                        Analyse Fabric
+                    </button>
+
+                    <p id="message" class="message"></p>
+
+                </div>
+            </section>
+
+            <!-- INSPECTION RESULTS -->
+
+            <section id="resultsSection" hidden>
+
+                <div class="section-heading">
+
+                    <div>
+                        <h2>Inspection Results</h2>
+                        <p>AI analysis of the uploaded fabric image.</p>
+                    </div>
+
+                    <button
+                        type="button"
+                        id="downloadReportButton"
+                        class="secondary-button"
+                        disabled
+                    >
+                        Download PDF Report
+                    </button>
+
+                </div>
+
+                <div class="results-grid">
+
+                    <div class="result-card">
+                        <h3>Analysis Image</h3>
+
+                        <div class="result-image-container">
+                            <img id="resultImage" alt="Inspection result">
+                        </div>
+                    </div>
+
+                    <div class="result-card">
+                        <h3>Detection Summary</h3>
+
+                        <div id="resultSummary"></div>
+
+                        <div id="detectionList"></div>
+                    </div>
+
+                </div>
+
+                <div class="result-card chart-card">
+                    <h3>Class Confidence Distribution</h3>
+
+                    <canvas id="confidenceChart"></canvas>
+                </div>
+
+            </section>
+
+            <!-- INSPECTION HISTORY -->
+
+            <section id="history" class="history-section">
+
+                <div class="section-heading">
+                    <h2>Recent Inspections</h2>
+                    <p>Saved inspection records.</p>
+                </div>
+
+                <div class="table-container">
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Image</th>
+                                <th>Method</th>
+                                <th>Result</th>
+                                <th>Confidence</th>
+                                <th>Time</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="historyBody">
+                            <tr>
+                                <td colspan="5">
+                                    No inspections performed yet.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+            </section>
+
+            <!-- FOOTER -->
+
+            <footer>
+                <p>
+                    Hybrid Deep Learning Framework for Fabric Defect Detection
+                </p>
+
+                <span>
+                    Academic Project | Smart Garment Manufacturing
+                </span>
+            </footer>
+
+        </main>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,10 @@
+tensorflow==2.16.1
+numpy<2
+opencv-python
+pillow
+scikit-learn
+matplotlib
+fastapi
+uvicorn
+python-multipart
+ultralytics==8.4.202
